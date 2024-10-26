@@ -11,32 +11,46 @@
                 <form @submit.prevent="submitForm">
                     <label for="firstName">First Name*</label>
                     <input type="text" id="firstName" placeholder="First name" v-model="form.firstName"
-                        class="input-field"> <br><br>
+                        class="input-field" ref="firstName" @keyup.enter="focusNext('lastName')" autofocus> 
+                    <br><br>
                     <span v-if="error.firstName" class="error">{{ error.firstName }}</span> <br><br>
+
                     <label for="lastName">Last Name*</label>
                     <input type="text" id="lastName" placeholder="Last name" v-model="form.lastName"
-                        class="input-field">
+                        class="input-field" ref="lastName" @keyup.enter="focusNext('employeeID')">
                     <br><br>
                     <span v-if="error.lastName" class="error">{{ error.lastName }}</span> <br><br>
+
                     <label for="employeeID">Employee ID*</label>
                     <input type="text" id="employeeID" placeholder="Employee ID" v-model="form.employeeID"
-                        class="input-field">
+                        class="input-field" ref="employeeID" @keyup.enter="focusNext('email')">
                     <br><br>
                     <span v-if="error.employeeID" class="error">{{ error.employeeID }}</span> <br><br>
+
                     <label for="email">Email*</label>
-                    <input type="email" id="email" placeholder="Email" v-model="form.email" class="input-field">
+                    <input type="email" id="email" placeholder="Email" v-model="form.email" class="input-field"
+                        ref="email" @keyup.enter="focusNext('gender')">
                     <br><br>
                     <span v-if="error.email" class="error">{{ error.email }}</span> <br><br>
+
                     <label for="gender">Gender</label>
-                    <select id="gender" v-model="form.gender" class="input-field">
+                    <select id="gender" v-model="form.gender" class="input-field" ref="gender"
+                        @keyup.enter="focusNext('DOB')">
                         <option value="" disabled>Select</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select> <br><br>
+
                     <label for="DOB">D.O.B</label>
-                    <input type="date" id="DOB" v-model="form.DOB" class="input-field"> <br><br>
+                    <input type="date" id="DOB" v-model="form.DOB" class="input-field" ref="DOB"
+                        @keyup.enter="focusNext('contact')">
+                    <br><br>
+
                     <label for="contact">Contact</label>
-                    <input type="text" id="contact" placeholder="Phone No." v-model="form.contact" class="input-field"> <br><br>
+                    <input type="text" id="contact" placeholder="Phone No." v-model="form.contact" class="input-field"
+                        ref="contact" @keyup.enter="submitForm"> 
+                    <br><br>
+
                     <button type="submit" class="submit-btn">Submit</button>
                 </form>
             </div>
@@ -70,6 +84,7 @@
         </div>
     </div>
 </template>
+
 <script>
 export default {
     name: 'SubmitForm',
@@ -85,7 +100,7 @@ export default {
                 DOB: '',
                 contact: ''
             },
-            error:{
+            error: {
                 firstName: '',
                 lastName: '',
                 employeeID: '',
@@ -101,35 +116,38 @@ export default {
         }
     },
     methods: {
-        validationForm(){
-            let isValid = true;
-            if(!this.form.firstName){
-                this.error.firstName = "is required...";
-                return false;
-            }
-            if(!this.form.lastName){
-                this.error.lastName = "is required...";
-                return false;
-            }
-            if(!this.form.employeeID){
-                this.error.employeeID = "is required";
-                return false;
-            }
-            if(!this.form.email){
-                this.error.email = "is required";
-                return false;
-            }
-
+        focusNext(refName) {
+            this.$refs[refName].focus();
+        },
+        validationForm() {
             this.error = {
                 firstName: '',
                 lastName: '',
                 employeeID: '',
                 email: ''
             }
+            let isValid = true;
+            if (!this.form.firstName) {
+                this.error.firstName = "is required...";
+                return false;
+            }
+            if (!this.form.lastName) {
+                this.error.lastName = "is required...";
+                return false;
+            }
+            if (!this.form.employeeID) {
+                this.error.employeeID = "is required";
+                return false;
+            }
+            if (!this.form.email) {
+                this.error.email = "is required";
+                return false;
+            }
+
             return isValid;
         },
         submitForm() {
-            if(this.validationForm()){
+            if (this.validationForm()) {
                 const newUser = this.form;
                 this.storedData.push(newUser);
                 localStorage.setItem('storedData', JSON.stringify(this.storedData));
@@ -142,6 +160,7 @@ export default {
                     DOB: '',
                     contact: ''
                 }
+                this.$refs.firstName.focus(); // Reset focus to the first input
             }
         },
         deleteEntry(index) {
@@ -151,6 +170,7 @@ export default {
     }
 }
 </script>
+
 <style scoped>
 .error {
     color: red;
